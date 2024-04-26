@@ -1,0 +1,41 @@
+DELIMITER //
+CREATE TRIGGER verificar_cantidad_inventario
+BEFORE INSERT ON venta
+FOR EACH ROW
+BEGIN
+    DECLARE cantidad_disponible INT;
+    -- Obtener la cantidad disponible en el inventario
+    SELECT inv.cantidad INTO cantidad_disponible FROM inventario inv
+    WHERE inv.id_producto_fk = NEW.id_producto_fk;
+
+    -- Verificar si la cantidad disponible es suficiente
+    IF cantidad_disponible IS NULL OR cantidad_disponible < NEW.cantidad THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No hay suficiente cantidad en el inventario para esta venta';
+    END IF;
+END;
+//
+DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER actualizar_nueva_cantidad_producto
+AFTER INSERT ON venta
+FOR EACH ROW
+BEGIN
+    DECLARE producto_no_encontrado CONDITION FOR SQLSTATE '45000';
+
+    -- Intentar actualizar la cantidad
+    UPDATE inventario 
+    SET cantidad = cantidad - NEW.cantidad 
+    WHERE id_producto_fk = NEW.id_producto_fk;
+
+    -- Comprobar si se actualizaron filas
+    IF ROW_COUNT() = 0 THEN
+        SIGNAL producto_no_encontrado;
+    END IF;
+END;
+//
+DELIMITER ;
+

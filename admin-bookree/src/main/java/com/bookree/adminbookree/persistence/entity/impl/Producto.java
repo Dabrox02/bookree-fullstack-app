@@ -1,25 +1,20 @@
-package com.bookree.adminbookree.persistence.entity;
+package com.bookree.adminbookree.persistence.entity.impl;
 
-import com.bookree.adminbookree.persistence.entity.impl.ColorProducto;
-import com.bookree.adminbookree.persistence.entity.impl.TallaProducto;
+import java.io.Serializable;
+
+import com.bookree.adminbookree.persistence.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "producto")
-public class Producto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+public class Producto extends BaseEntity implements Serializable {
 
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
@@ -27,25 +22,20 @@ public class Producto {
     @Column(name = "precio", nullable = false, length = 100)
     private String precio;
 
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_tipo_fk", nullable = false)
     private TipoProducto idTipoFk;
 
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_color_fk", nullable = false)
     private ColorProducto idColorFk;
 
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_talla_fk", nullable = false)
     private TallaProducto idTallaFk;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getNombre() {
         return nombre;

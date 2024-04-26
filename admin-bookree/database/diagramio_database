@@ -1,0 +1,73 @@
+
+Enum "tipo_usuario_enum" {
+  "cliente"
+  "admin"
+}
+
+Table "tipo_producto" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [unique, not null]
+}
+
+Table "color_producto" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [unique, not null]
+}
+
+Table "talla_producto" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [unique, not null]
+}
+
+Table "forma_pago" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [unique, not null]
+}
+
+Table "usuario" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [not null]
+  "correo" VARCHAR(100) [unique, not null]
+  "clave" VARCHAR(100) [not null]
+  "tipo_usuario" usuario_tipo_enum [not null]
+}
+
+Table "producto" {
+  "id" INT [pk, increment]
+  "nombre" VARCHAR(100) [not null]
+  "precio" VARCHAR(100) [not null]
+  "id_tipo_fk" INT [not null]
+  "id_color_fk" INT [not null]
+  "id_talla_fk" INT [not null]
+}
+
+Table "inventario" {
+  "id" INT [pk, increment]
+  "cantidad" INT [not null]
+  "id_producto_fk" INT [not null]
+}
+
+Table "venta" {
+  "id" INT [pk, increment]
+  "fecha" DATE [not null]
+  "cantidad" INT [not null]
+  "total" DECIMAL(10,2) [not null]
+  "id_producto_fk" INT [not null]
+  "id_cliente_fk" INT [not null]
+  "id_forma_pago_fk" INT [not null]
+}
+
+Ref:"tipo_producto"."id" < "producto"."id_tipo_fk"
+
+Ref:"color_producto"."id" < "producto"."id_color_fk"
+
+Ref:"talla_producto"."id" < "producto"."id_talla_fk"
+
+Ref:"producto"."id" < "inventario"."id_producto_fk"
+
+Ref:"producto"."id" < "venta"."id_producto_fk"
+
+Ref:"usuario"."id" < "venta"."id_cliente_fk"
+
+Ref:"forma_pago"."id" < "venta"."id_forma_pago_fk"
+

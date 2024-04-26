@@ -22,7 +22,7 @@ public abstract class AbstractController<DTO extends BaseDTO> {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping()
     public List<DTO> list() {
         return service.findAll();
     }
